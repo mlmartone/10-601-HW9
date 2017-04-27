@@ -6,11 +6,13 @@ classdef DataCache
         users;
         train;
         test;
+        movieMat;
+        userMat;
     end
     
     methods
         %Creates a DataCache object with the data a the specified path
-        function data = DataCache(path)
+        function data = DataCache(path,genres)
             %Read in and format the movies file into a cell array
             %data.movies is in the format (movie_id,genres)
             data.movies = readtable(strcat([path,'movies.dat']),...
@@ -36,14 +38,49 @@ classdef DataCache
             data.test = readtable(strcat([path,'testing.dat']),...
                 'Delimiter',' ','ReadVariableNames',0);
             data.test = cell2mat(table2cell(data.test));
-        end
-        
-        function unprocessed = preprocess(unprocessed)
-            for i = 1:1:size(unprocessed,2)
-                unprocessed = unprocessed(~isnan(unprocessed(:,i)),:);
-            end
+            %Generate an easier to work with movieMat matrix that expands
+            %the movies to be in any combination of 18 given genres
+            data.movieMat = data.expandMovies(data.movies);
+            %Generate an easier to work with userMat matrix that expands
+            %the users to rate any combination of 18 given genres
+            %NOTE: THIS MATRIX IS EMPTY AND FILLED IN LATER
+            data.userMat = data.expandUsers(data.users);
         end
     end
     
+    methods(Static)
+        %Pre-Processes the given data by removing rows with NaN values
+        function dataMat = preprocess(dataMat)
+            for i = 1:1:size(dataMat,2)
+                dataMat = dataMat(~isnan(dataMat(:,i)),:);
+            end
+        end
+        
+        %Expands the movies cell array to an easier to work with matrix of
+        %genres, indexed by (movie_id,genre)
+        function movieMat = expandMovies(movies)
+            genres = {'Action','Adventure','Animation','Children''s',...
+                'Comedy','Crime','Documentary','Drama','Fantasy',...
+                'Film-Noir','Horror','Musical','Mystery','Romance',...
+                'Sci-Fi','Thriller','War','Western'}';
+            movieMat = zeros(size(movies,1),size(genres,1));
+            for movie = 1:1:size(movies,1)
+                for genre = 1:1:size(genres,1)
+                    movieMat(movie,genre) = any(any(strcmp(...
+                        movies{movie,2},genres(genre))));
+                end
+            end
+        end
+        
+        %Expands the users cell array to an easier to work with matrix of
+        %genres, indexed by (user_id,genre)
+        function userMat = expandUsers(users)
+            genres = {'Action','Adventure','Animation','Children''s',...
+                'Comedy','Crime','Documentary','Drama','Fantasy',...
+                'Film-Noir','Horror','Musical','Mystery','Romance',...
+                'Sci-Fi','Thriller','War','Western'}';
+            userMat = zeros(size(users,1),size(genres,1));
+        end
+    end
 end
 

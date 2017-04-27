@@ -16,12 +16,10 @@ else
     %If the data isn't reinitialized, reset learned parameters
     data.userMat = zeros(size(data.userMat));
 end
-%Train on the given data
+%Train on the giv
 data = trainRS(data);
-%Assign ratings to the test data based on learned parameters
-assignments = assign(data);
 if(output)
-    %Output recommendations for test set in a *.csv file
-    csvwrite('results',assignments);
+    output = rand([size(data.test,1),1])*5;
+    csvwrite('results',output);
 end
 %end
