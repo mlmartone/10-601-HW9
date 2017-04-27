@@ -1,6 +1,7 @@
 %function recommenderSystem()
 %Set these when running the code to suppress certain behaviors by setting
 %them to 0
+start = tic;
 readData = 1;
 output = 1;
 if(readData)
@@ -22,6 +23,7 @@ data = trainRS(data);
 assignments = assign(data);
 if(output)
     %Output recommendations for test set in a *.csv file
-    csvwrite('results',assignments);
+    csvwrite(strcat(['..',filesep,'results.csv']),assignments);
 end
+toc(start)
 %end

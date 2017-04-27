@@ -1,9 +1,0 @@
-function trainRS(data)
-for sample = 1:1:size(data.train,1)
-    numReviews = zeros(
-    movie = data.train(sample,1);
-    user = data.train(sample,2);
-    rating = data.traim(sample,3);
-    data.userMat(:,user) = data.userMat(:,user) + rating*data.movieMat(movie)
-end
-end
