@@ -37,15 +37,13 @@ classdef DataCache
                 'Delimiter',' ','ReadVariableNames',0);
             data.test = cell2mat(table2cell(data.test));
         end
-    end
-    
-    methods(Static)
-        %Pre-Processes the given data by removing rows with NaN values
-        function dataMat = preprocess(dataMat)
-            for i = 1:1:size(dataMat,2)
-                dataMat = dataMat(~isnan(dataMat(:,i)),:);
+        
+        function unprocessed = preprocess(unprocessed)
+            for i = 1:1:size(unprocessed,2)
+                unprocessed = unprocessed(~isnan(unprocessed(:,i)),:);
             end
         end
     end
+    
 end
 
