@@ -9,8 +9,9 @@ for sample = 1:1:size(data.test,1)
     movie = data.test(sample,2);
     %Find the assignment for the given pair by taking the dot product of
     %the feature vector and the user's rating vector
-    numGenres = sum(data.movieMat(movie,:)');
     assignments(sample) = sum(data.userMat(user,:).*...
-        data.movieMat(movie,:))/numGenres;
+        data.movieMat(movie,:));
 end
+assignments(assignments < 1) = 1;
+assignments(assignments > 5) = 5;
 end
