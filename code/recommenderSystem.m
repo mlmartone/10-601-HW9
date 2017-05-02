@@ -20,7 +20,7 @@ end
 %Train on the given data
 data = trainRS(data);
 %Assign ratings to the test data based on learned parameters
-assignments = assign(data);
+assignments = assignRS(data);
 if(output)
     %Output recommendations for test set in a *.csv file
     csvwrite(strcat(['..',filesep,'results.csv']),assignments);
