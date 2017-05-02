@@ -81,7 +81,8 @@ classdef DataCache
             for user = 1:1:size(users,1)
                 for info = size(genres,1)-numDemos+1:1:size(genres,1)
                     userMat(user,info) = any(any(strcmp(...
-                        users{user,2},genres(info))))*2 - 1;
+                        users{user,2},genres(info))));
+                    userMat(user,info) = 
                 end
             end
         end
