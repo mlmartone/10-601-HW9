@@ -1,4 +1,4 @@
-%function rmse = checkError(data,assignments)
+function rmse = checkError(data,assignments)
 %Read in and format the training data into a matrix
 %data.train is in the format (user_id,movie_id,rating)
 trueRatings = readtable('ratingsFULL.dat','Delimiter',':',...
@@ -17,4 +17,4 @@ for sample = 1:1:size(data.test,1)
     end
 end
 rmse = rms(error);
-%end
+end
