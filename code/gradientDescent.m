@@ -1,6 +1,6 @@
 function data = gradientDescent(data)
-gamma = .002;
-numEpochs = 250;
+gamma = .0025;
+numEpochs = 100;
 lambda = 0;
 error = zeros(size(data.train,1),1);
 totalError = zeros(numEpochs+1,1);
@@ -34,7 +34,7 @@ for epoch = 1:1:numEpochs
         movieChange = -gamma*movieMatGrad;
         data.movieMat(movie,:) = data.movieMat(movie,:) + movieChange;
     end
-    gamma = max(gamma*.99,.0005);
+    gamma = max(gamma*.9,.00001);
     totalError(epoch+1) = rms(error);
     plot(0:1:numEpochs,totalError);
     pause(.01)
