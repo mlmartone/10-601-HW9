@@ -1,6 +1,6 @@
 function data = gradientDescent(data, avg, userB, movieB)
 gamma = .007;
-numEpochs = 25;
+numEpochs = 50;
 lambda = 0.1;
 testAmt = 1;
 error = zeros(size(data.train,1),1);
