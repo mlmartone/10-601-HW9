@@ -19,6 +19,7 @@ else
 end
 %Train on the given data
 data = trainRS(data);
+data = gradientDescent(data);
 %Assign ratings to the test data based on learned parameters
 assignments = assignRS(data);
 if(output)
