@@ -53,8 +53,8 @@ data = trainRS(data);
 %uY = size(data.userMat, 2)
 %data.movieMat = zeros(mX,mY);
 %data.userMat = zeros(uX,uY);
-data.userMat = data.userMat - avgReviewsUser;
-data.userMat(:,19:20) = 0
+data.userMat = data.userMat - repmat(avgReviewsUser, 1, 20);
+data.userMat(:,19:20) = 0;
 data = gradientDescent(data, avgReviewsOverall, userOffsets, movieOffsets);
 %Assign ratings to the test data based on learned parameters
 
