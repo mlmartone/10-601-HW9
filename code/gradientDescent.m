@@ -10,6 +10,10 @@ totalError = zeros(numEpochs+1,1);
 %    data.movieMat(movie,:) = data.movieMat(movie,:)/...
 %        sum(data.movieMat(movie,:)');
 %end
+%gamma = .0015;
+%numEpochs = 200;
+%lambda = 0;%-.02;
+
 for sample = 1:1:size(data.train,1)
     %Get the current sample information
     user = data.train(sample,1);
@@ -21,7 +25,6 @@ for sample = 1:1:size(data.train,1)
 end
 totalError(1) = rms(error);
 %Iterate through all training examples, updating with gradient descent
-size(data.train,1)
 for epoch = 1:1:numEpochs
     epoch
     for sample = 1:1:size(data.train,1)
@@ -41,19 +44,17 @@ for epoch = 1:1:numEpochs
         movieChange = -gamma*movieMatGrad;
         data.movieMat(movie,:) = data.movieMat(movie,:) + movieChange;
     end
-    %gamma = max(gamma* .6,.00001);
-    %for sample = testAmt:1:size(data.train,1)
-    %    user = data.train(sample,1);
-    %    movie = data.train(sample,2);
-    %    rating = data.train(sample,3);
-    %    estimate =  avg +  userB(user) + movieB(movie) + ...
-    %        sum(data.userMat(user,:).*data.movieMat(movie,:));
-    %    validationError(sample - testAmt + 1) = rating - estimate;
-    %end
-    %totalError(epoch+1) = rms(validationError);
-    error(epoch+1)
-    %plot(0:1:numEpochs,totalError);
-    %pause(.01)
+    gamma = max(gamma*.95,.000001);
+    for sample = testAmt:1:size(data.train,1)
+        user = data.train(sample,1);
+        movie = data.train(sample,2);
+        rating = data.train(sample,3);
+        validationError(sample - testAmt + 1) = rating - ...
+            sum(data.userMat(user,:).*data.movieMat(movie,:));
+    end
+    totalError(epoch+1) = rms(error);%validationError);
+    plot(0:1:numEpochs,totalError);
+    pause(.01);
 end
 
 end
