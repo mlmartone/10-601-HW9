@@ -21,7 +21,7 @@ end
 
 %creates a numUsers x numMoves matrix to store each users rating
 %for each movie
-maxs = max(data.train, [], 1)
+maxs = max(data.train, [], 1);
 hugeAssMatt = zeros(maxs(1), maxs(2));
 for sample = 1:1:(size(data.train,1))
     user = data.train(sample,1);
@@ -37,6 +37,10 @@ numReviewsMovie = sum(hugeAssMatt ~= 0, 1);
 avgReviewsUser = sum(hugeAssMatt, 2) ./ numReviewsUser;
 avgReviewsMovie = sum(hugeAssMatt, 1) ./ numReviewsMovie;
 
+%if a user or movie has no reviews, set to zero to avoid NaN
+avgReviewsUser(isnan(avgReviewsUser)) = 0;
+avgReviewsMovie(isnan(avgReviewsMovie)) = 0;
+
 %avgReviewsOverall: average rating across all movies
 %movieOffsets: how much each movie average differs from the overall
 %userOffsets: how much each user average differs from the overall
@@ -51,12 +55,12 @@ data = trainRS(data);
 
 %userMat will now store how much a users rating for a particular genre
 %differs from their average rating across all movies
-data.userMat = data.userMat - repmat(avgReviewsUser, 1, 20);
+data.userMat = data.userMat - repmat(avgReviewsUser,1,20);
 
 %we should probably delete this, its just so we ignore the M F columns
 data.userMat(:,19:20) = 0;
 
-
+%gradient descent on data.userMat and 
 data = gradientDescent(data, avgReviewsOverall, userOffsets, movieOffsets);
 
 %Assign ratings to the test data based on learned parameters
