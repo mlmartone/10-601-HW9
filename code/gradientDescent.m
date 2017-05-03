@@ -1,18 +1,15 @@
 function data = gradientDescent(data, avg, userB, movieB)
 gamma = .007;
-numEpochs = 50;
+numEpochs = 100;
 lambda = 0.1;
-testAmt = 1;
+
+%since we are using the entire dataset to train for Autolab submission
+trainAmt = 1;
+
 error = zeros(size(data.train,1),1);
-validationError = zeros(size(data.train,1) - testAmt, 1);
+validationError = zeros(size(data.train,1) - trainAmt, 1);
 totalError = zeros(numEpochs+1,1);
-%for movie = 1:1:size(data.movieMat,1)
-%    data.movieMat(movie,:) = data.movieMat(movie,:)/...
-%        sum(data.movieMat(movie,:)');
-%end
-%gamma = .0015;
-%numEpochs = 200;
-%lambda = 0;%-.02;
+
 
 for sample = 1:1:size(data.train,1)
     %Get the current sample information
@@ -24,34 +21,52 @@ for sample = 1:1:size(data.train,1)
     error(sample) = rating - estimate;
 end
 totalError(1) = rms(error);
+
 %Iterate through all training examples, updating with gradient descent
 for epoch = 1:1:numEpochs
-    epoch
+
     for sample = 1:1:size(data.train,1)
         %Get the current sample information
         user = data.train(sample,1);
         movie = data.train(sample,2);
         rating = data.train(sample,3);
+        
+        %Predict the rating for the user and movie
+        %Bias the prediction using overall average and user/movie offset
         estimate =  avg +  userB(user) + movieB(movie) + ...
             sum(data.userMat(user,:).*data.movieMat(movie,:));
+        
+        %Calculate the error and gradient using L2 regularization
         error(sample) = rating - estimate;
         userMatGrad = -error(sample)*data.movieMat(movie,:) + ...
             lambda*data.userMat(movie,:);
         movieMatGrad = -error(sample)*data.userMat(user,:) + ...
             lambda*data.movieMat(movie,:);
+        
+        %Update feature matrices
         userChange = -gamma*userMatGrad;
         data.userMat(user,:) = data.userMat(user,:) + userChange;
         movieChange = -gamma*movieMatGrad;
         data.movieMat(movie,:) = data.movieMat(movie,:) + movieChange;
     end
+    
+    %Reduce descent rate each epoch to some minumum
     gamma = max(gamma*.95,.000001);
-    for sample = testAmt:1:size(data.train,1)
+    
+    %change trainAmt to be number of samples for training
+    %remaining are used for testing
+    for sample = trainAmt:1:size(data.train,1)
         user = data.train(sample,1);
         movie = data.train(sample,2);
         rating = data.train(sample,3);
-        validationError(sample - testAmt + 1) = rating - ...
+        estimate =  avg +  userB(user) + movieB(movie) + ...
             sum(data.userMat(user,:).*data.movieMat(movie,:));
+        
+        %Calculate validation error
+        validationError(sample - trainAmt + 1) = rating - estimate;
     end
+    
+    %Error Plotting
     totalError(epoch+1) = rms(error);%validationError);
     plot(0:1:numEpochs,totalError);
     pause(.01);

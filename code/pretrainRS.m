@@ -1,5 +1,5 @@
 %Trains a recommender system given movie and user data
-function data = trainRS(data)
+function data = pretrainRS(data)
 %Set up a matrix of reviews by genre to normalize ratings
 numReviews = zeros(size(data.userMat,1),size(data.genres,1));
 numM = zeros(size(data.movieMat,1),1);
